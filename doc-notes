@@ -1,0 +1,60 @@
+https://sagemaker-examples.readthedocs.io/en/latest/introduction_to_amazon_algorithms/imageclassification_caltech/Image-classification-fulltraining.html  
+
+End-to-End Multiclass Image Classification Example  
+
+https://paperswithcode.com/dataset/caltech-256  
+
+Caltech-256 is an object recognition dataset containing 30,607 real-world images, of different sizes, spanning 257 classes (256 object classes and an additional clutter class). Each class is represented by at least 80 images.   
+
+[MXNet's im2rec tool](https://mxnet.apache.org/versions/1.6/api/r/docs/api/im2rec.html)
+
+Look for youtube tutorial video on MXNet's im2rec tool
+
+Training jobs on p3.2xlarge instance.  
+
+Prepare image files for machine learning.  
+[Deep Learning-Prepare Image for Dataset](https://towardsdatascience.com/deep-learning-prepare-image-for-dataset-d20d0c4e30de)
+
+
+Remove PNGs from the downloaded image folder.
+```python
+import glob
+import pathlib
+
+for file in glob.glob('frames/*.png'):
+  path = pathlib.Path(file)
+  path.unlink()  
+```
+
+Rename your image files
+```python
+import os
+os.getcwd()
+collection = "images/cat"
+for i, filename in enumerate(os.listdir(collection)):
+  print(filename)
+  os.rename(collection + "/" + filename, collection + "/cat" + str(i) + ".jpg")
+```
+
+Using your set of images  
+```python
+from PIL import Image
+import os
+import argparse
+
+def rescale_images(directory, size):
+  for img in os.listdir(directory):
+    im = Image.open(directory+img)
+    im_resized = im.resize(size, Image.ANTIALIAS)
+    im_resized.save(directory+img)
+
+if __name__ == '__main__':
+  parser = argparse.ArgumentParser(description="Rescale images")
+  parser.add_argument('-d', '--directory', type=str, required=True, help='Directory containing the images')
+  parser.add_argument('-s', '--size', type=int, nargs=2, required=True, metavar=('width', 'height'), help='Image size')
+  args = parser.parse_args()
+  rescale_images(args.directory, args.size)
+##run this command
+##python convert_image_resolution.py -d images/ -s 800 600  
+```
+
